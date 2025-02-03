@@ -39,7 +39,7 @@ with st.expander("➕ Add Income/Expense", expanded=False):
 
         submitted = st.form_submit_button("Add Entry")
         if submitted:
-            income_flag = 1 if income == "Income" else 0
+            income_flag = 1 if income == "Type" else 0
 
             # Compute new Total
             last_total = df.iloc[0]["Total"] if not df.empty else 0
@@ -75,7 +75,7 @@ with st.expander("✏️ Edit Entry", expanded=False):
             submitted = st.form_submit_button("Edit Entry")
 
             if submitted:
-                income_flag = 1 if income == "Income" else 0
+                income_flag = 1 if income == "Type" else 0
                 prev_total = df.loc[row_to_edit - 1, "Total"] if row_to_edit > 0 else 0
                 new_total = prev_total + amount if income_flag == 1 else prev_total - amount
                 
