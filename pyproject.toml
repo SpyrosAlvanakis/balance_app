@@ -10,8 +10,8 @@ dependencies = [
     "gspread",
     "oauth2client",
     "ipykernel",
+    "pandantic",
     "python-dotenv",
-    "reflex",
     "streamlit",
     "plotly",
     "openpyxl"

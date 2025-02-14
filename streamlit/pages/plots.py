@@ -9,14 +9,21 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../utils')))
 # Utils functions
 from connect import connect
+from aed_rows import correct_gs_types 
 
 # Connect to the Google Sheets API
 sheet = connect()
 
-# Fetch and display the current data
-df = pd.DataFrame(sheet.get_all_records())
-df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
+# Get raw values including headers
+raw_data = sheet.get_values()
+headers = raw_data[0]
+values = raw_data[1:]
+
+# Create DataFrame with proper number parsing
+df = pd.DataFrame(values, columns=headers)
+
+# Correct the types of the columns
+df = correct_gs_types(df)
 
 # Add a title
 st.title("Balance plots")
