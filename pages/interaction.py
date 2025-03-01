@@ -5,13 +5,18 @@ import numpy as np
 import sys
 import os
 
-# Set the Utils path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../utils')))
-
 # Utils functions
-from connect import connect
-from aed_rows import add_row, delete_row, correct_gs_types #  edit_row,
-from schema import Categories, Data
+from utils.connect import connect
+from utils.aed_rows import add_row, delete_row, correct_gs_types #  edit_row,
+from utils.schema import Categories, Data
+from utils.authentication import check_password_widget
+
+# authentication
+if ('user' not in st.session_state) or (st.session_state['user'] is None):
+    st.session_state['user'] = None
+    check_password_widget()
+if (st.session_state['user'] is None):
+    st.stop()
 
 # Add a title
 st.title("Interaction")

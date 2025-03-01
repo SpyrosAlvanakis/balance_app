@@ -1,5 +1,5 @@
 from typing import List, Optional
-from schema import Data, Categories
+from utils.schema import Data, Categories
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date as datetype  # Rename imported date to avoid shadowing

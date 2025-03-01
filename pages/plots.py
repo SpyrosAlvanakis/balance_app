@@ -5,11 +5,9 @@ import numpy as np
 import sys
 import os
 
-# Set the Utils path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../utils')))
 # Utils functions
-from connect import connect
-from aed_rows import correct_gs_types 
+from utils.connect import connect
+from utils.aed_rows import correct_gs_types 
 
 # Connect to the Google Sheets API
 sheet = connect()
