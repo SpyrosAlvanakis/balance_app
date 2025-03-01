@@ -2,6 +2,7 @@
 .web
 *.py[cod]
 assets/external/
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -13,6 +14,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Reflex files
-.web
-rxconfig.py
+# Streamlit secrets
+.streamlit/
