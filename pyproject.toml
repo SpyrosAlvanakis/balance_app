@@ -16,3 +16,6 @@ dependencies = [
     "plotly",
     "openpyxl"
 ]
+
+[tool.poetry]
+package-mode = false
