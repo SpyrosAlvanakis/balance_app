@@ -1,0 +1,10 @@
+pandas
+numpy
+gspread
+oauth2client
+ipykernel
+pydantic
+python-dotenv
+streamlit
+plotly
+openpyxl
