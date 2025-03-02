@@ -1,21 +1,15 @@
 import streamlit as st 
 
-st.title("💰 Balance Tracker")
+st.title("Balance App")
 
 st.markdown("""
-## Welcome to your personal finance tracker!
+## Welcome to the balance app!
 
 This application helps you manage and visualize your personal finances. You can:
 
 - View and manage your income and expenses
 - Visualize your financial data with interactive charts
 - Predict future expenses based on historical data
-
-### Getting Started
-
-1. Browse through different pages using the navigation bar above
-2. Log in to access full functionality
-3. Start tracking your finances!
 
 **Note:** You can view blurred data without logging in, but you'll need to log in to interact with the app fully.
 """)
