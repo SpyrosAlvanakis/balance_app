@@ -10,11 +10,12 @@ from utils.connect import connect
 from utils.aed_rows import add_row, delete_row, correct_gs_types
 from utils.schema import Categories, Data
 from utils.authentication import auth_sidebar, is_authenticated
+from utils.blur_css_helper import apply_blur_css
 
-# Add a title
+# Title
 st.title("Balance Data")
 
-# Show authentication sidebar
+# Authentication
 auth_sidebar()
 
 # Connect to the Google Sheets API
@@ -39,36 +40,14 @@ if is_authenticated():
     # Show the current total
     st.subheader(f'Current total: {df.Total.iloc[0]}')
 
-    # Show normal dataframe
+    # Show dataframe
     st.dataframe(df, use_container_width=True)
 else:
     # Show blurred dataframe with a message
     st.info("Please log in to see clear data and interact with the application.")
     
     # Apply CSS for blurring - more aggressive blur and targeting the specific elements
-    st.markdown("""
-    <style>
-    /* Target the Streamlit dataframe */
-    .stDataFrame, .stTable {
-        filter: blur(8px);
-        pointer-events: none;
-    }
-    
-    /* Target inner elements to ensure blur works across browsers */
-    .stDataFrame div, .stTable div, 
-    .stDataFrame span, .stTable span,
-    .stDataFrame td, .stTable td,
-    .stDataFrame th, .stTable th {
-        filter: blur(6px) !important;
-    }
-    
-    /* Ensures the table headers are also blurred */
-    [data-testid="StyledDataFrameDataCell"],
-    [data-testid="StyledDataFrameHeaderCell"] {
-        filter: blur(6px) !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    apply_blur_css()
     
     # Display dataframe directly - the CSS will apply the blur
     st.dataframe(df)

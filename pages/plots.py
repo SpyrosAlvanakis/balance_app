@@ -11,10 +11,10 @@ from utils.aed_rows import correct_gs_types
 from utils.authentication import auth_sidebar, is_authenticated
 from utils.blur_css_helper import apply_blur_css
 
-# Add authentication sidebar
+# Authentication
 auth_sidebar()
 
-# Add a title
+# Title
 st.title("Balance Visualizations")
 
 # Apply CSS for blurring if not authenticated
@@ -170,7 +170,6 @@ if vis_type == "Category Distribution":
 else:  # Total Over Time visualization - SIMPLE LINE CHART
     st.subheader("Balance Over Time")
     
-    # Prepare time series data
     # First, filter the sorted dataframe by the selected date range
     time_df = df_sorted[(df_sorted['Date'] >= start_date) & (df_sorted['Date'] <= end_date)]
     
@@ -181,14 +180,13 @@ else:  # Total Over Time visualization - SIMPLE LINE CHART
             x='Date', 
             y='Total',
             title='Balance Over Time',
-            labels={'Total': 'Balance ($)', 'Date': 'Date'},
+            labels={'Total': 'Balance (€)', 'Date': 'Date'},
             markers=True
         )
         
-        # Update layout
         fig_time.update_layout(
             xaxis_title='Date',
-            yaxis_title='Total Balance ($)',
+            yaxis_title='Total Balance (€)',
             hovermode='x unified'
         )
         
@@ -203,18 +201,17 @@ else:  # Total Over Time visualization - SIMPLE LINE CHART
             end_balance = time_df.iloc[-1]['Total'] if not time_df.empty else 0
             balance_change = end_balance - start_balance
             
-            # Show metrics
             col1, col2 = st.columns(2)
             with col1:
                 st.metric(
                     "Starting Balance", 
-                    f"${start_balance:.2f}"
+                    f"€{start_balance:.2f}"
                 )
             
             with col2:
                 st.metric(
                     "Ending Balance", 
-                    f"${end_balance:.2f}", 
+                    f"€{end_balance:.2f}", 
                     delta=f"{balance_change:.2f}"
                 )
     else:
