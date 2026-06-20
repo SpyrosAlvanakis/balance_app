@@ -21,16 +21,12 @@ wheels/
 .claude/
 .devcontainer/
 .github/
-.streamlit/
 .superpowers/
 docs/
 
 # Agents
 AGENTS.md
 CLAUDE.md
-
-# Local development scripts
-run_local.sh
 
 # locks
 uv.lock
