@@ -35,13 +35,40 @@ df = correct_gs_types(df)
 # Sort data by Date (latest first)
 df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
 
+# Filter controls for the transaction table
+filter_col1, filter_col2, filter_col3 = st.columns(3)
+with filter_col1:
+    filter_categories = st.multiselect(
+        "Filter by category", sorted(df["Category"].unique()), default=[]
+    )
+with filter_col2:
+    filter_date_range = st.date_input(
+        "Filter by date range",
+        value=(df["Date"].min().date(), df["Date"].max().date()) if not df.empty else None,
+    )
+with filter_col3:
+    filter_type = st.radio("Filter by type", ["All", "Expense", "Income"], horizontal=True)
+
+filtered_table_df = df.copy()
+if filter_categories:
+    filtered_table_df = filtered_table_df[filtered_table_df["Category"].isin(filter_categories)]
+if isinstance(filter_date_range, tuple) and len(filter_date_range) == 2:
+    start, end = (pd.Timestamp(filter_date_range[0]), pd.Timestamp(filter_date_range[1]))
+    filtered_table_df = filtered_table_df[
+        (filtered_table_df["Date"] >= start) & (filtered_table_df["Date"] <= end)
+    ]
+if filter_type != "All":
+    filtered_table_df = filtered_table_df[
+        filtered_table_df["Type"] == (1 if filter_type == "Income" else 0)
+    ]
+
 # Display dataframe with CSS blurring if not authenticated
 if is_authenticated():
     # Show the current total
     st.subheader(f'Current total: {df.Total.iloc[0]}')
 
     # Show dataframe
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(filtered_table_df, use_container_width=True)
 else:
     # Show blurred dataframe with a message
     st.info("Please log in to see clear data and interact with the application.")
