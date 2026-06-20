@@ -21,15 +21,18 @@ production data.
 
 ```
 home.py                     # Entry point: st.navigation with 4 pages
-pages/interaction.py        # CRUD: view transactions, add, delete
-pages/plots.py              # Pie charts (income/expense by category) + line chart (balance)
+pages/interaction.py        # CRUD: view/filter transactions, add (dynamic category), delete
+pages/plots.py              # Pie charts, monthly trend charts, line chart (balance)
 pages/intro_page.py         # Static landing page
-pages/predict.py            # ALL COMMENTED OUT — renders blank page
+pages/predict.py            # Flat-average / linear-regression balance projection
 utils/connect.py            # gspread connection to Google Sheets (no error handling)
 utils/aed_rows.py           # Row ops: add_row, delete_row, correct_gs_types
-utils/authentication.py     # HMAC-based login via st.session_state, roles, secrets
+utils/authentication.py     # authenticate() pure function + HMAC login UI
 utils/blur_css_helper.py    # CSS blur for unauthenticated users (NOT real security)
-utils/schema.py             # Pydantic: Categories (Enum, ~30 values), Data (BaseModel)
+utils/schema.py             # Pydantic: Data (BaseModel, Category is a plain str)
+utils/categories.py         # DEFAULT_CATEGORIES + dynamic category derivation/normalization
+utils/forecasting.py        # Monthly aggregation + balance projection math
+tests/                      # pytest suite, fully mocked Google Sheets — no network
 ```
 
 ## Key Conventions
@@ -46,7 +49,9 @@ utils/schema.py             # Pydantic: Categories (Enum, ~30 values), Data (Bas
 
 - `connect()` has **no try/except** — Google Sheets connectivity failures cause raw tracebacks.
 - `blur_css_helper.py` only blurs with CSS — trivial to bypass via browser devtools.
-- `predict.py` is fully commented out and will render a blank page. Either implement or remove from nav.
 - `aed_rows.py` has old versions of functions kept as comments — safe to clean up.
-- Duplicate login UI code in `authentication.py` (`show_login_widget` has two nearly-identical form blocks).
 - `openpyxl` and `ipykernel` are in dependencies but not used in the app code.
+- Categories have no dedicated storage — `get_known_categories()` derives the list from
+  `DEFAULT_CATEGORIES` plus whatever already exists in the sheet's `Category` column.
+- Run `./run_local.sh` against a separate dev/test Google Sheet, never production — both
+  local dev and the pytest suite assume this.
