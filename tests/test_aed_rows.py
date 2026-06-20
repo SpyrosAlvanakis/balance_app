@@ -1,6 +1,7 @@
 import pandas as pd
 
-from utils.aed_rows import correct_gs_types
+from utils.aed_rows import add_row, correct_gs_types, delete_row, validate_row
+from utils.schema import Categories
 
 
 def test_correct_gs_types_parses_european_numbers():
@@ -34,10 +35,6 @@ def test_correct_gs_types_parses_plain_integer_amounts():
     assert result["Amount"].iloc[0] == 50.0
     assert result["Total"].iloc[0] == 1950.0
     assert result["Type"].iloc[0] == 1
-
-
-from utils.aed_rows import add_row, delete_row, validate_row
-from utils.schema import Categories
 
 
 def test_validate_row_accepts_valid_row():
