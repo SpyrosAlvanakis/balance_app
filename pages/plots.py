@@ -7,9 +7,10 @@ import os
 
 # Utils functions
 from utils.connect import connect
-from utils.aed_rows import correct_gs_types 
+from utils.aed_rows import correct_gs_types
 from utils.authentication import auth_sidebar, is_authenticated
 from utils.blur_css_helper import apply_blur_css
+from utils.forecasting import compute_monthly_aggregates
 
 # Authentication
 auth_sidebar()
@@ -216,3 +217,49 @@ else:  # Total Over Time visualization - SIMPLE LINE CHART
                 )
     else:
         st.warning("No data available for the selected date range.")
+
+# --- NEW: Monthly trend charts (use full history, not the date-range filter above) ---
+st.divider()
+st.subheader("Monthly Trends")
+
+monthly = compute_monthly_aggregates(df)
+
+if not monthly.empty:
+    # Monthly income vs expense bars
+    income_vs_expense = monthly.melt(
+        id_vars=["YearMonth"], value_vars=["Income", "Expenses"],
+        var_name="Type", value_name="Amount",
+    )
+    fig_bars = px.bar(
+        income_vs_expense, x="YearMonth", y="Amount", color="Type",
+        barmode="group", title="Monthly Income vs Expenses",
+    )
+    st.plotly_chart(fig_bars, use_container_width=True)
+
+    # Category spending trend over time
+    category_monthly = (
+        df.assign(YearMonth=df["Date"].dt.strftime("%Y-%m"))
+        .groupby(["YearMonth", "Category"])["Amount"]
+        .sum()
+        .reset_index()
+        .sort_values("YearMonth")
+    )
+    fig_category_trend = px.line(
+        category_monthly, x="YearMonth", y="Amount", color="Category",
+        title="Category Spending Trend Over Time", markers=True,
+    )
+    st.plotly_chart(fig_category_trend, use_container_width=True)
+
+    # Net savings per month, colored by surplus/deficit
+    net_savings = monthly.copy()
+    net_savings["Result"] = net_savings["Net"].apply(
+        lambda value: "Surplus" if value >= 0 else "Deficit"
+    )
+    fig_net = px.bar(
+        net_savings, x="YearMonth", y="Net", color="Result",
+        color_discrete_map={"Surplus": "green", "Deficit": "red"},
+        title="Net Savings per Month",
+    )
+    st.plotly_chart(fig_net, use_container_width=True)
+else:
+    st.info("Not enough data yet to show monthly trends.")
