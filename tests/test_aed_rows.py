@@ -1,7 +1,6 @@
 import pandas as pd
 
 from utils.aed_rows import add_row, correct_gs_types, delete_row, validate_row
-from utils.schema import Categories
 
 
 def test_correct_gs_types_parses_european_numbers():
@@ -43,13 +42,22 @@ def test_validate_row_accepts_valid_row():
     result = validate_row(row)
 
     assert result is not None
-    assert result.Category == Categories.Fun
+    assert result.Category == "Fun"
     assert result.Amount == 20.00
     assert result.Type == 0
 
 
-def test_validate_row_rejects_invalid_category():
-    row = ["2026-03-01", "NotARealCategory", "20.00", "980.00", "0"]
+def test_validate_row_accepts_brand_new_category():
+    row = ["2026-03-01", "Pharmacy", "20.00", "980.00", "0"]
+
+    result = validate_row(row)
+
+    assert result is not None
+    assert result.Category == "Pharmacy"
+
+
+def test_validate_row_rejects_empty_category():
+    row = ["2026-03-01", "", "20.00", "980.00", "0"]
 
     result = validate_row(row)
 
@@ -68,7 +76,7 @@ def test_add_row_inserts_validated_row_at_position_two(fake_sheet):
 
 
 def test_add_row_returns_false_for_invalid_row(fake_sheet):
-    new_row = ["2026-03-01", "NotARealCategory", "20.00", "980.00", "0"]
+    new_row = ["2026-03-01", "", "20.00", "980.00", "0"]
 
     result = add_row(fake_sheet, new_row)
 

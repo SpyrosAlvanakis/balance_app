@@ -1,5 +1,5 @@
 from typing import List, Optional
-from utils.schema import Data, Categories
+from utils.schema import Data
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date as datetype  # Rename imported date to avoid shadowing
@@ -37,7 +37,7 @@ def add_row(sheet, new_row):
             # Convert validated data back to list format for sheet
             sheet_row = [
                 validated_data.Date.strftime("%Y-%m-%d"),
-                validated_data.Category.value,  # Use .value for enum
+                validated_data.Category,
                 validated_data.Amount,
                 validated_data.Total,
                 validated_data.Type
