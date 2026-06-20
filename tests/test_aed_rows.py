@@ -34,3 +34,53 @@ def test_correct_gs_types_parses_plain_integer_amounts():
     assert result["Amount"].iloc[0] == 50.0
     assert result["Total"].iloc[0] == 1950.0
     assert result["Type"].iloc[0] == 1
+
+
+from utils.aed_rows import add_row, delete_row, validate_row
+from utils.schema import Categories
+
+
+def test_validate_row_accepts_valid_row():
+    row = ["2026-03-01", "Fun", "20.00", "980.00", "0"]
+
+    result = validate_row(row)
+
+    assert result is not None
+    assert result.Category == Categories.Fun
+    assert result.Amount == 20.00
+    assert result.Type == 0
+
+
+def test_validate_row_rejects_invalid_category():
+    row = ["2026-03-01", "NotARealCategory", "20.00", "980.00", "0"]
+
+    result = validate_row(row)
+
+    assert result is None
+
+
+def test_add_row_inserts_validated_row_at_position_two(fake_sheet):
+    new_row = ["2026-03-01", "Fun", "20.00", "980.00", "0"]
+
+    result = add_row(fake_sheet, new_row)
+
+    assert result is True
+    fake_sheet.insert_row.assert_called_once_with(
+        ["2026-03-01", "Fun", 20.00, 980.00, 0], 2
+    )
+
+
+def test_add_row_returns_false_for_invalid_row(fake_sheet):
+    new_row = ["2026-03-01", "NotARealCategory", "20.00", "980.00", "0"]
+
+    result = add_row(fake_sheet, new_row)
+
+    assert result is False
+    fake_sheet.insert_row.assert_not_called()
+
+
+def test_delete_row_calls_delete_rows_with_given_index(fake_sheet):
+    result = delete_row(fake_sheet, 5)
+
+    assert result is True
+    fake_sheet.delete_rows.assert_called_once_with(5)
