@@ -8,7 +8,7 @@ import os
 # Utils functions
 from utils.connect import connect
 from utils.aed_rows import add_row, delete_row, correct_gs_types
-from utils.schema import Categories, Data
+from utils.categories import get_known_categories, normalize_category
 from utils.authentication import auth_sidebar, is_authenticated
 from utils.blur_css_helper import apply_blur_css
 
@@ -56,7 +56,14 @@ else:
 with st.expander("➕ Add Income/Expense", expanded=False):
     with st.form("add_entry"):
         date = st.date_input("Select Date")
-        category = st.selectbox("Select Category", [cat.value for cat in Categories])
+        known_categories = get_known_categories(df)
+        category_choice = st.selectbox("Select Category", known_categories)
+        new_category = st.text_input("Or type a new category", value="")
+        category = (
+            normalize_category(new_category, known_categories)
+            if new_category.strip()
+            else category_choice
+        )
         amount = st.number_input("Enter Amount", min_value=0.01, step=0.01)
         income = st.radio("Type", ["Expense", "Income"])
 
