@@ -20,6 +20,9 @@ dependencies = [
 [tool.uv]
 package = false
 
+[tool.poetry]
+package-mode = false
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
